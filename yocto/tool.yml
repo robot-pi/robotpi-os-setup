@@ -1,0 +1,21 @@
+header:
+  version: 14
+
+repos:
+  meta-qt5:
+    url: "https://github.com/meta-qt5/meta-qt5.git"
+    commit: "644ebf220245bdc06e7696ccc90acc97a0dd2566"
+    path: "layers/meta-qt5"
+
+  meta-clang:
+    url: "https://github.com/kraj/meta-clang.git"
+    commit: "312ff1c39b1bf5d35c0321e873417eb013cea477"
+    path: "layers/meta-clang"
+
+  ros:
+    branch: "kirkstone"
+
+bblayers_conf_header:
+  yocto_tool_priorities: |
+    BBFILE_PRIORITY_clang-layer_forcevariable = "15"
+    BBFILE_PRIORITY_qt5-layer_forcevariable = "16"
