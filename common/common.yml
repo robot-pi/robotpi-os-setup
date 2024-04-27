@@ -19,4 +19,4 @@ local_conf_header:
     TEMPLATECONF = ""
     # ??? Double check if we need???
     DISTRO_FEATURES += "usrmerge opengl glfw"
-    LICENSE_FLAGS_ACCEPTED:append = " commercial_ffmpeg commercial_x264"
+    LICENSE_FLAGS_ACCEPTED += "commercial_ffmpeg commercial_x264"

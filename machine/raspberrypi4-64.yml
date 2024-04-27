@@ -15,4 +15,4 @@ bblayers_conf_header:
 local_conf_header:
   raspberrypi: |
     # Set the accepted license flags to allow the use of commercial graphics drivers.
-    LICENSE_FLAGS_ACCEPTED:append = "commercial synaptics-killswitch"
+    LICENSE_FLAGS_ACCEPTED += "commercial synaptics-killswitch"
