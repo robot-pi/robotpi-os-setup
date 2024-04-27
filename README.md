@@ -1,8 +1,8 @@
 # Building Robot Pi OS
 
 ## Build Envrionment
-1. Build machine: Ubuntu 20.04
-2. Repo configuration tool: kas (https://kas.readthedocs.io/en/latest/)
+1. Build machine: [Ubuntu 22.04](https://releases.ubuntu.com/jammy/)
+2. Repo configuration tool: [kas](https://kas.readthedocs.io/en/latest/)
 
 ## Ubuntu prerequisites:
 ```
@@ -30,8 +30,13 @@ Create top-level project directory such `robotpi`.
 cd robotpi
 git clone git@github.com:whni/robotpi-os-setup.git
 ```
+The directory hierarchy should looks like:
+```
+robotpi
+|-- robotpi-os-setup
+```
 
-## Running kas
+## Build the image
 There are multiple kas configration files under robotpi-os-setup directory:
 1. `robotpi-os-setup/robotpi-os-qemux86-64.yml`
 2. `robotpi-os-setup/robotpi-raspberrypi4-64.yml`
@@ -39,20 +44,30 @@ There are multiple kas configration files under robotpi-os-setup directory:
 kas checkout robotpi-os-setup/robotpi-os-xxxx.yml
 ```
 This will generate project configuration files such as local.conf and bblayers.conf
-under build/conf and download all required layers under layers directory. Then use
-bitbake to generate the target image.
+under build/conf and download all required layers under layers directory:
+```
+robotpi
+|-- robotpi-os-setup
+|-- layers
+    |-- ...
+    |-- meta-robotpi
+|-- build
+    |-- ...
+    |-- conf
+        |-- local.conf
+        |-- bblayers.conf
+```
+
+Then move to the top directory and use bitbake to generate the target image:
 ```
 source layers/openembedded-core/oe-init-build-env
 bitbake ros-image-core
 ```
+
 The above kas and bitbake steps can be also achieved by one-line command (NOT recommended):
 ```
 kas build robotpi-os-setup/robotpi-os-xxxx.yml
 ```
-
-<span style="color:red">NOTE: Please note that whenever you run kas checkout or build command,
-all layer repos under layers directory will be refreshed based on kas yml configurations.
-Please remember to save your changes before running any kas command!</span>.
 
 ## Writing the image
 The raspberry pi image can be found as:
@@ -62,3 +77,26 @@ build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/ros-image-core-humble-r
 
 If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
 this file directly.
+
+## Development on meta-robotpi layer repo
+under `robotpi-os-setup/robotpi/robotpi.yml`, we can see the repo setup of robotpi layer container,
+which is currently tracking the remote master branch.
+
+Once we have finished the kas checkout process, [meta-robotpi](https://github.com/whni/meta-robotpi.git)
+repo will be pulled into `layers/meta-robotpi` directory, where any local changes can be made for
+feature development and testing. However, `layers/meta-robotpi` is just a temporary git checkout repo
+for build purpose. We need to move the verified changes over to your own checkout copy of
+`layers/meta-robotpi` with git ssh link and push it to the remote branch:
+```
+git clone git@github.com:whni/meta-robotpi.git -b master
+# move your local changes from layers/meta-robotpi to here
+git add --all
+git commit -m "your commit message"
+git push
+```
+
+> [!WARNING]
+> Please note that whenever you run kas checkout or build command, all layer repos under `layers`
+> directory will be sync to the upstream version based on kas yml. All local changes will be abandoned.
+> Please remember to save your changes before running any
+
