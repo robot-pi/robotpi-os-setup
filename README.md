@@ -1,8 +1,19 @@
-# Building meta-ros with kas
+# Building Robot Pi OS
 
-Here are simple instructions for getting started building the long-term support
-releases of Yocto (kirkstone) and ROS 2 (humble).  Documentation for kas can be
-found at https://kas.readthedocs.io/en/latest/
+## Build Envrionment
+1. Build machine: Ubuntu 20.04
+2. Repo configuration tool: kas (https://kas.readthedocs.io/en/latest/)
+
+## Ubuntu prerequisites:
+```
+sudo apt-get install gawk wget git diffstat unzip gcc-multilib \
+        build-essential chrpath socat cpio python3-pip python3-pexpect \
+        xz-utils debianutils iputils-ping \
+        python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev xterm \
+        g++-multilib locales lsb-release python3-distutils time \
+        liblz4-tool zstd file
+sudo locale-gen en_US.utf8
+```
 
 ## Installing kas
 
@@ -13,44 +24,41 @@ source venv/bin/activate
 pip3 install kas
 ```
 
-## Clone the meta-ros build branch
-After you have sourced the environment where kas is installed you may get the
-kas configuration by cloning the build branch of meta-ros:
+## Clone the robotpi-os-setup project
+Create top-level project directory such `robotpi`. 
 ```
-git clone -b build https://github.com/ros/meta-ros
+cd robotpi
+git clone git@github.com:whni/robotpi-os-setup.git
 ```
 
 ## Running kas
-Create a new project directory wherever you want and set the KAS_WORK_DIR 
-environment variable to point to it.  Then run kas with the configuration file
-for Yocto Kirkstone release and ROS 2 Humble distribution for the
-Raspberry Pi 4.
+There are multiple kas configration files under robotpi-os-setup directory:
+1. `robotpi-os-setup/robotpi-os-qemux86-64.yml`
+2. `robotpi-os-setup/robotpi-raspberrypi4-64.yml`
 ```
-mkdir $PROJECT_DIR
-KAS_WORK_DIR=$PROJECT_DIR
-kas build meta-ros/kas/oeros-kirkstone-humble-raspberrypi4-64.yml
+kas checkout robotpi-os-setup/robotpi-os-xxxx.yml
+```
+This will generate project configuration files such as local.conf and bblayers.conf
+under build/conf and download all required layers under layers directory. Then use
+bitbake to generate the target image.
+```
+source layers/openembedded-core/oe-init-build-env
+bitbake ros-image-core
+```
+The above kas and bitbake steps can be also achieved by one-line command (NOT recommended):
+```
+kas build robotpi-os-setup/robotpi-os-xxxx.yml
 ```
 
-This should complete successfully and produce an image you can write to the
-sdcard.
-
-```
-build/tmp-glibc/deploy/images/raspberrypi4-64/ros-image-core-humble-raspberrypi4-64.rootfs.wic.bz2
-```
+<span style="color:red">NOTE: Please note that whenever you run kas checkout or build command,
+all layer repos under layers directory will be refreshed based on kas yml configurations.
+Please remember to save your changes before running any kas command!</span>.
 
 ## Writing the image
+The raspberry pi image can be found as:
+```
+build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/ros-image-core-humble-raspberrypi4-64.rootfs.wic.bz2
+```
 
 If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
 this file directly.
-
-If using dd or bmaptool, you must first decompress the bzip2 file.
-
-If using bmaptool, you may follow the instructions here:
-https://docs.yoctoproject.org/dev/dev-manual/bmaptool.html
-
-Since we have already produced the wic file you may use the following example
-with the last 2 arguments replaced with the path to the wic file and to the 
-SD card you wish to write:
-```
-oe-run-native bmaptool-native bmaptool copy <build-directory/tmp/deploy/images/machine/image.wic> </dev/sdX>
-```
