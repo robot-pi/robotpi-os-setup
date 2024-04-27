@@ -5,3 +5,4 @@ header:
     - ros2/humble.yml
     - machine/qemux86-64.yml
     - common/common.yml
+    - robotpi/robotpi.yml

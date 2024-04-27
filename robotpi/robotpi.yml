@@ -1,0 +1,14 @@
+header:
+  version: 14
+
+repos:
+  meta-robotpi:
+    url: "https://github.com/whni/meta-robotpi.git"
+    path: "layers/meta-robotpi"
+    branch: main
+    layers:
+      meta-robotpi-tools:
+
+bblayers_conf_header:
+  robotpi_layer_priorities: |
+    BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "21"
