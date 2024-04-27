@@ -1,0 +1,29 @@
+header:
+  version: 14
+
+local_conf_header:
+  interactive_shell_configuration: |
+    # Under certain circumstances the system may need input from you and to do this it
+    # can launch an interactive shell. It needs to do this since the build is
+    # multithreaded and needs to be able to handle the case where more than one parallel
+    # process may require the user's attention. The default is iterate over the available
+    # terminal types to find one that works.
+    #
+    # Examples of the occasions this may happen are when resolving patches which cannot
+    # be applied, to use the devshell or the kernel menuconfig
+    #
+    # Supported values are auto, gnome, xfce, rxvt, screen, konsole (KDE 3.x only), none
+    # Note: currently, Konsole support only works for KDE 3.x due to the way
+    # newer Konsole versions behave
+    #OE_TERMINAL = "auto"
+    # By default disable interactive patch resolution (tasks will just fail instead):
+    PATCHRESOLVE = "noop"
+
+  qemu_configuration: |
+    # By default qemu will build with a builtin VNC server where graphical output can be
+    # seen. The two lines below enable the SDL backend too. By default libsdl2-native will
+    # be built, if you want to use your host's libSDL instead of the minimal libsdl built
+    # by libsdl2-native then uncomment the ASSUME_PROVIDED line below.
+    PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
+    PACKAGECONFIG:append:pn-nativesdk-qemu = " sdl"
+    #ASSUME_PROVIDED += "libsdl2-native"

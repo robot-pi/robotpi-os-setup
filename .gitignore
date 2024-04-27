@@ -1,0 +1,14 @@
+# From gedit
+*~
+
+# From vi
+.*.swp
+
+# From scripts/mcf
+__pycache__/
+
+# From bitbake
+bitbake-cookerdaemon.log
+
+# From OpenEmbedded-Build-Instructions.md (manually created)
+/conf

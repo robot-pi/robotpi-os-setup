@@ -1,0 +1,24 @@
+header:
+  version: 14
+
+local_conf_header:
+  display_useful_buildcfg_vars: |
+    # Uncomment to display additional useful variables in the build configuration output.
+    require conf/distro/include/ros-useful-buildcfg-vars.inc
+
+  ros_build_artifacts: |
+    # Set the directories where downloads, shared-state, and the output from the build are placed to be on the separate disk.
+    ROS_OE_RELEASE_SERIES_SUFFIX ?= "-${ROS_OE_RELEASE_SERIES}"
+    ROS_BUILD_ARTIFACTS ?= "${TOPDIR}"
+    DL_DIR ?= "${ROS_BUILD_ARTIFACTS}/downloads"
+    SSTATE_DIR ?= "${ROS_BUILD_ARTIFACTS}/sstate-cache${ROS_OE_RELEASE_SERIES_SUFFIX}"
+    TMPDIR = "${@os.getenv('TMPDIR', '${ROS_BUILD_ARTIFACTS}/BUILD-${DISTRO}-${ROS_DISTRO}${ROS_OE_RELEASE_SERIES_SUFFIX}')}"
+
+  ros_implicit_workspace: |
+    # Uncomment to have all interactive shells implicitly source "setup.sh" (ROS 1) or "ros_setup.sh" (ROS 2).
+    # EXTRA_IMAGE_FEATURES += "ros-implicit-workspace"
+
+distro: "ros2"
+
+target:
+  - ros-image-core

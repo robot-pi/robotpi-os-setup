@@ -1,0 +1,22 @@
+header:
+  version: 14
+  includes:
+   - common/build-config.yml
+   - common/diskmon.yml
+   - common/extra-image-config.yml
+   - common/pkg-manage-config.yml
+   - common/runtime-config.yml
+
+local_conf_header:
+  common_configurations: |
+    # Reduce the size of the build artifacts by removing the working files under TMPDIR/work. Comment this out to preserve them
+    # (see https://www.yoctoproject.org/docs/latest/mega-manual/mega-manual.html#ref-classes-rm-work).
+    INHERIT += "rm_work"
+    INHERIT += "report-error"
+    INHERIT_DISTRO:remove = "create-spdx"
+    #
+    WARN_QA:remove = "license-exists"
+    TEMPLATECONF = ""
+    # ??? Double check if we need???
+    DISTRO_FEATURES += "usrmerge opengl glfw"
+    LICENSE_FLAGS_ACCEPTED:append = " commercial_ffmpeg commercial_x264"
