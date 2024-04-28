@@ -3,9 +3,11 @@ header:
   includes:
    - common/build-config.yml
    - common/diskmon.yml
+   - common/license-flag-accepted.yml
    - common/extra-image-config.yml
    - common/pkg-manage-config.yml
    - common/runtime-config.yml
+   - common/sdk-target-arch.yml
 
 local_conf_header:
   common_configurations: |
@@ -18,5 +20,4 @@ local_conf_header:
     WARN_QA:remove = "license-exists"
     TEMPLATECONF = ""
     # ??? Double check if we need???
-    DISTRO_FEATURES += "usrmerge opengl glfw"
-    LICENSE_FLAGS_ACCEPTED += "commercial_ffmpeg commercial_x264"
+    DISTRO_FEATURES += "usrmerge"
