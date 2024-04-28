@@ -7,5 +7,4 @@ local_conf_header:
     # product. If shipped as part of an image these packages may have
     # implications so they are disabled by default.  To enable them,
     # un-comment the below as appropriate.
-    LICENSE_FLAGS_ACCEPTED += "commercial_ffmpeg \
-                               commercial_x264"
+    LICENSE_FLAGS_ACCEPTED += "commercial_ffmpeg commercial_x264"
