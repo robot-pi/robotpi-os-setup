@@ -83,9 +83,9 @@ under `robotpi-os-setup/robotpi/robotpi.yml`, we can see the repo setup of robot
 which is currently tracking the remote master branch.
 
 Once we have finished the kas checkout process, [meta-robotpi](https://github.com/whni/meta-robotpi.git)
-repo will be pulled into `layers/meta-robotpi` directory, where any local changes can be made for
+remote repo will be pulled into `layers/meta-robotpi` directory, where any local changes can be made for
 feature development and testing. However, `layers/meta-robotpi` is just a temporary git checkout repo
-for build purpose. We need to move the verified changes over to your own checkout copy of
+for build purpose. For safety, you need to move the verified changes over to your own checkout copy of
 `layers/meta-robotpi` with git ssh link and push it to the remote branch:
 ```
 git clone git@github.com:whni/meta-robotpi.git -b master
@@ -97,6 +97,7 @@ git push
 
 > [!WARNING]
 > Please note that whenever you run kas checkout or build command, all layer repos under `layers`
-> directory will be sync to the upstream version based on kas yml. All local changes will be abandoned.
-> Please remember to save your changes before running any
+> directory will be sync to the upstream version based on kas yml. All local commits will be abandoned,
+> while local uncommitted changes can be retained. Please remember to save your changes before running
+> any kas operations
 

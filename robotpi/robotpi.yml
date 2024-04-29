@@ -3,7 +3,7 @@ header:
 
 repos:
   meta-robotpi:
-    url: "https://github.com/whni/meta-robotpi.git"
+    url: "git@github.com:whni/meta-robotpi.git"
     path: "layers/meta-robotpi"
     branch: main
     layers:
