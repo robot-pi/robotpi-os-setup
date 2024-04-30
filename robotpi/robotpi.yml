@@ -7,12 +7,12 @@ repos:
     path: "layers/meta-robotpi"
     branch: main
     layers:
-      meta-robotpi-distro:
+      meta-robotpi-common:
       meta-robotpi-tools:
 
 bblayers_conf_header:
   robotpi_layer_priorities: |
-    BBFILE_PRIORITY_robotpi-distro-layer_forcevariable = "21"
-    BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "22"
+    BBFILE_PRIORITY_robotpi-common-layer_forcevariable = "51"
+    BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "52"
 
 distro: "robotpi"
