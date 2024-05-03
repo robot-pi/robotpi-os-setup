@@ -61,7 +61,7 @@ robotpi
 Then move to the top directory and use bitbake to generate the target image:
 ```
 source layers/openembedded-core/oe-init-build-env
-bitbake ros-image-core
+bitbake robotpi-image-turtlebot3-core
 ```
 
 The above kas and bitbake steps can be also achieved by one-line command (NOT recommended):
@@ -70,13 +70,19 @@ kas build robotpi-os-setup/robotpi-os-xxxx.yml
 ```
 
 ## Writing the image
+### Raspberry Pi
 The raspberry pi image can be found as:
 ```
 build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/ros-image-core-humble-raspberrypi4-64.rootfs.wic.bz2
 ```
-
 If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
 this file directly.
+
+### QEMU
+Run the following command on your host machine
+```
+runqemu qemux86-64
+```
 
 ## Development on meta-robotpi layer repo
 under `robotpi-os-setup/robotpi/robotpi.yml`, we can see the repo setup of robotpi layer container,
