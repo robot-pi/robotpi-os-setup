@@ -8,11 +8,13 @@ repos:
     branch: main
     layers:
       meta-robotpi-common:
+      meta-robotpi-ros:
       meta-robotpi-tools:
 
 bblayers_conf_header:
   robotpi_layer_priorities: |
     BBFILE_PRIORITY_robotpi-common-layer_forcevariable = "51"
-    BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "52"
+    BBFILE_PRIORITY_robotpi-ros-layer_forcevariable = "52"
+    BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "53"
 
 distro: "robotpi"
