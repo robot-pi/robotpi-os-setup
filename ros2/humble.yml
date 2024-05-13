@@ -5,8 +5,13 @@ header:
 
 repos:
   ros:
-    url: "https://github.com/ros/meta-ros.git"
+    url: "https://github.com/robwoolley/meta-ros.git"
+    #url: "https://github.com//meta-ros.git"
     path: "layers/meta-ros"
+    branch: "feature/turtlebot3"
+    commit: "bbf84cfa76950e7c59d68744d96f8ca5056c55c4"
+    #branch: "kirkstone"
+    #commit: "c4c3f973eb6a7a5e5e21e77bccb922669fad2c67"
     layers:
       meta-ros-common:
       meta-ros2:
