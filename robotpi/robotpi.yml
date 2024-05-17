@@ -18,3 +18,6 @@ bblayers_conf_header:
     BBFILE_PRIORITY_robotpi-tools-layer_forcevariable = "53"
 
 distro: "robotpi"
+
+target:
+  - robotpi-image-turtlebot3-core

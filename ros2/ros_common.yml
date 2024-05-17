@@ -17,6 +17,3 @@ local_conf_header:
   ros_implicit_workspace: |
     # Uncomment to have all interactive shells implicitly source "setup.sh" (ROS 1) or "ros_setup.sh" (ROS 2).
     # EXTRA_IMAGE_FEATURES += "ros-implicit-workspace"
-
-target:
-  - ros-image-core

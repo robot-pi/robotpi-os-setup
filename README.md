@@ -73,7 +73,7 @@ kas build robotpi-os-setup/robotpi-os-xxxx.yml
 ### Raspberry Pi
 The raspberry pi image can be found as:
 ```
-build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/ros-image-core-humble-raspberrypi4-64.rootfs.wic.bz2
+build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/robotpi-image-turtlebot3-core-humble-raspberrypi4-64-${timestamp}.rootfs.wic.bz2
 ```
 If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
 this file directly.
@@ -82,6 +82,7 @@ this file directly.
 Run the following command on your host machine
 ```
 runqemu qemux86-64
+runqemu qemux86-64 qemuparams="-cpu IvyBridge" nographic
 ```
 
 ## Development on meta-robotpi layer repo
