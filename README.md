@@ -60,7 +60,7 @@ robotpi
 
 Then move to the top directory and use bitbake to generate the target image:
 ```
-source layers/openembedded-core/oe-init-build-env
+source layers/meta-robotpi/robotpi-init-build-env
 bitbake robotpi-image-turtlebot3-core
 ```
 
