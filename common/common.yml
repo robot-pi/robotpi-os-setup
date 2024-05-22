@@ -2,6 +2,7 @@ header:
   version: 14
   includes:
    - common/build-config.yml
+   - common/connman-wifi.yml
    - common/diskmon.yml
    - common/license-flag-accepted.yml
    - common/extra-image-config.yml
