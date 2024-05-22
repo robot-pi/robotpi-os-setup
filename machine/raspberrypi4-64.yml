@@ -8,9 +8,17 @@ repos:
     url: "https://github.com/agherzan/meta-raspberrypi.git"
     path: "layers/meta-raspberrypi"
 
+  meta-robotpi:
+    url: "git@github.com:whni/meta-robotpi.git"
+    path: "layers/meta-robotpi"
+    branch: main
+    layers:
+      meta-robotpi-raspberrypi:
+
 bblayers_conf_header:
   raspberrypi_layer_priorities: |
     BBFILE_PRIORITY_raspberrypi_forcevariable = "40"
+    BBFILE_PRIORITY_robotpi-raspberrypi-layer_forcevariable = "41"
 
 local_conf_header:
   raspberrypi: |
