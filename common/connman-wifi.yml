@@ -4,8 +4,8 @@ header:
 local_conf_header:
   connman_default_config: |
     # This will generate a default Connman setting
-    CONNMAN_WIFI_ENABLE ??= "true"
-    CONNMAN_BT_ENABLE ??= "false"
+    CONNMAN_WIFI_ENABLE ?= "true"
+    CONNMAN_BT_ENABLE ?= "false"
     # Uncomment and replace Wi-Fi SSID and passphrase
-    # CONNMAN_WIFI_NAME ??= "connman_wifi_name"
-    # CONNMAN_WIFI_PASSPHRASE ??= "connman_wifi_passphrase"
+    CONNMAN_WIFI_NAME ?= "WIFI_NAME_DEFAULT"
+    CONNMAN_WIFI_PASSPHRASE ?= "WIFI_PASSPHRASE_DEFAULT"
