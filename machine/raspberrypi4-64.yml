@@ -15,11 +15,6 @@ repos:
     layers:
       meta-robotpi-raspberrypi:
 
-bblayers_conf_header:
-  raspberrypi_layer_priorities: |
-    BBFILE_PRIORITY_raspberrypi_forcevariable = "40"
-    BBFILE_PRIORITY_robotpi-raspberrypi-layer_forcevariable = "41"
-
 local_conf_header:
   raspberrypi: |
     # Set the accepted license flags to allow the use of commercial graphics drivers.

@@ -14,8 +14,3 @@ repos:
 
   ros:
     branch: "kirkstone"
-
-bblayers_conf_header:
-  yocto_tool_priorities: |
-    BBFILE_PRIORITY_clang-layer_forcevariable = "15"
-    BBFILE_PRIORITY_qt5-layer_forcevariable = "16"

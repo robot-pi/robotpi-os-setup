@@ -28,10 +28,3 @@ repos:
 
   ros:
     branch: "kirkstone"
-
-bblayers_conf_header:
-  yocto_base_layer_priorities: |
-    BBFILE_PRIORITY_core_forcevariable = "5"
-    BBFILE_PRIORITY_openembedded-layer_forcevariable = "10"
-    BBFILE_PRIORITY_networking-layer_forcevariable = "11"
-    BBFILE_PRIORITY_meta-python_forcevariable = "13"
