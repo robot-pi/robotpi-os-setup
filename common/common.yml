@@ -12,8 +12,6 @@ header:
 
 local_conf_header:
   common_configurations: |
-    # Merge system directories into counterparts in /usr
-    DISTRO_FEATURES += "usrmerge"
     # Reduce the size of the build artifacts by removing the working files under TMPDIR/work. Comment this out to preserve them
     # (see https://www.yoctoproject.org/docs/latest/mega-manual/mega-manual.html#ref-classes-rm-work).
     INHERIT += "rm_work"
