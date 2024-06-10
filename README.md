@@ -76,7 +76,10 @@ The raspberry pi image can be found as:
 build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/robotpi-image-turtlebot3-core-humble-raspberrypi4-64-${timestamp}.rootfs.wic.bz2
 ```
 If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
-this file directly.
+this file directly. If you are stuck at decompressing step around 63% process,
+you can uncompress the wic.bz2 file manually and choose the uncompressed file
+in balenaEtcher, or just [RPI Imager](https://www.raspberrypi.com/software/)
+instead.
 
 ### QEMU
 Run the following command on your host machine
