@@ -22,9 +22,16 @@ repos:
     commit: "8bb16533532b6abc2eded7d9961ab2a108fd7a5b"
     path: "layers/meta-openembedded"
     layers:
-      meta-oe:
+      meta-filesystems:
+      meta-gnome:
+      meta-initramfs:
+      meta-multimedia:
       meta-networking:
+      meta-oe:
+      meta-perl:
       meta-python:
+      meta-webserver:
+      meta-xfce:
 
   ros:
     branch: "kirkstone"
