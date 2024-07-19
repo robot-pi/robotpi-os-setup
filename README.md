@@ -1,113 +1,90 @@
-# Building Robot Pi OS
+oe-rpb-manifest
+=================
 
-## Build Envrionment
-1. Build machine: [Ubuntu 22.04](https://releases.ubuntu.com/jammy/)
-2. Repo configuration tool: [kas](https://kas.readthedocs.io/en/latest/)
+OE QCOM RPB Repo manifest repository
 
-## Ubuntu prerequisites:
-```
-sudo apt-get install gawk wget git diffstat unzip gcc-multilib \
-        build-essential chrpath socat cpio python3-pip python3-pexpect \
-        xz-utils debianutils iputils-ping \
-        python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev xterm \
-        g++-multilib locales lsb-release python3-distutils time \
-        liblz4-tool zstd file
-sudo locale-gen en_US.utf8
-```
+These are the setup scripts for the OE RPB buildsystem. If you want to (re)build packages or images for OE RPB, this is the thing to use.
+The OE RPB buildsystem is using various components from the Yocto Project, most importantly the Openembedded buildsystem, the bitbake task executor and various application and BSP layers.
 
-## Installing kas
+To configure the scripts and download the build metadata, do:
+```
+mkdir ~/bin
+PATH=~/bin:$PATH
 
-To create a Python virtual environment to install kas run these commands:
+curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+chmod a+x ~/bin/repo
 ```
-python3 -m venv venv
-source venv/bin/activate
-pip3 install kas
+Run repo init to bring down the latest version of Repo with all its most recent bug fixes. You must specify a URL for the manifest, which specifies where the various repositories included in the Android source will be placed within your working directory. To check out the current branch, specify it with -b:
 ```
+repo init -u https://github.com/96boards/oe-rpb-manifest.git -b qcom/kirkstone
+```
+When prompted, configure Repo with your real name and email address.
 
-## Clone the robotpi-os-setup project
-Create top-level project directory such `robotpi`. 
-```
-cd robotpi
-git clone git@github.com:whni/robotpi-os-setup.git
-```
-The directory hierarchy should looks like:
-```
-robotpi
-|-- robotpi-os-setup
-```
+A successful initialization will end with a message stating that Repo is initialized in your working directory. Your client directory should now contain a .repo directory where files such as the manifest will be kept.
 
-## Build the image
-There are multiple kas configration files under robotpi-os-setup directory:
-1. `robotpi-os-setup/robotpi-os-qemux86-64.yml`
-2. `robotpi-os-setup/robotpi-raspberrypi4-64.yml`
+To pull down the metadata sources to your working directory from the repositories as specified in the default manifest, run
 ```
-kas checkout robotpi-os-setup/robotpi-os-xxxx.yml
+repo sync
 ```
-This will generate project configuration files such as local.conf and bblayers.conf
-under build/conf and download all required layers under layers directory:
+When downloading from behind a proxy (which is common in some corporate environments), it might be necessary to explicitly specify the proxy that is then used by repo:
 ```
-robotpi
-|-- robotpi-os-setup
-|-- layers
-    |-- ...
-    |-- meta-robotpi
-|-- build
-    |-- ...
-    |-- conf
-        |-- local.conf
-        |-- bblayers.conf
+export HTTP_PROXY=http://<proxy_user_id>:<proxy_password>@<proxy_server>:<proxy_port>
+export HTTPS_PROXY=http://<proxy_user_id>:<proxy_password>@<proxy_server>:<proxy_port>
 ```
+More rarely, Linux clients experience connectivity issues, getting stuck in the middle of downloads (typically during "Receiving objects"). It has been reported that tweaking the settings of the TCP/IP stack and using non-parallel commands can improve the situation. You need root access to modify the TCP setting:
+```
+sudo sysctl -w net.ipv4.tcp_window_scaling=0
+repo sync -j1
+```
+Setup Environment
+-----------------
 
-Then move to the top directory and use bitbake to generate the target image:
-```
-source layers/meta-robotpi/robotpi-init-build-env
-bitbake robotpi-image-turtlebot3-core
-```
+MACHINE values can be:
+* dragonboard-410c
+* dragonboard-820c
+* ...
 
-The above kas and bitbake steps can be also achieved by one-line command (NOT recommended):
-```
-kas build robotpi-os-setup/robotpi-os-xxxx.yml
-```
+DISTRO values can be:
+* rpb
+* rpb-wayland
 
-## Writing the image
-### Raspberry Pi
-The raspberry pi image can be found as:
 ```
-build/BUILD-${DISTRO}-xxxx/deploy/images/raspberrypi4-64/robotpi-image-turtlebot3-core-humble-raspberrypi4-64-${timestamp}.rootfs.wic.bz2
+. setup-environment
+MACHINE=<machine> DISTRO=<distro> bitbake <image>
 ```
-If using [Balena Etcher](https://etcher.balena.io/), you may provide it with
-this file directly. If you are stuck at decompressing step around 63% process,
-you can uncompress the wic.bz2 file manually and choose the uncompressed file
-in balenaEtcher, or just [RPI Imager](https://www.raspberrypi.com/software/)
-instead.
+e.g. MACHINE=dragonboard-410c DISTRO=rpb bitbake core-image-minimal
 
-### QEMU
-Run the following command on your host machine
-```
-runqemu qemux86-64
-runqemu qemux86-64 qemuparams="-cpu IvyBridge" nographic
-```
+Creating a local topic branch
+-----------------------------
 
-## Development on meta-robotpi layer repo
-under `robotpi-os-setup/robotpi/robotpi.yml`, we can see the repo setup of robotpi layer container,
-which is currently tracking the remote master branch.
-
-Once we have finished the kas checkout process, [meta-robotpi](https://github.com/whni/meta-robotpi.git)
-remote repo will be pulled into `layers/meta-robotpi` directory, where any local changes can be made for
-feature development and testing. However, `layers/meta-robotpi` is just a temporary git checkout repo
-for build purpose. For safety, you need to move the verified changes over to your own checkout copy of
-`layers/meta-robotpi` with git ssh link and push it to the remote branch:
+If you need to create local branches for all repos which then can be done e.g.
 ```
-git clone git@github.com:whni/meta-robotpi.git -b master
-# move your local changes from layers/meta-robotpi to here
-git add --all
-git commit -m "your commit message"
-git push
+~/bin/repo start myangstrom --all
 ```
+Where 'myangstrom' is the name of branch you choose
 
-> [!WARNING]
-> Please note that whenever you run kas checkout or build command, all layer repos under `layers`
-> directory will be sync to the upstream version based on kas yml. All local commits will be abandoned,
-> while local uncommitted changes can be retained. Please remember to save your changes before running
-> any kas operations
+Updating the sandbox
+--------------------
 
+If you need to bring changes from upstream then use following commands
+```
+repo sync
+```
+Rebase your local committed changes
+```
+repo rebase
+```
+If you find any bugs please report them here
+
+https://github.com/96boards/oe-rpb-manifest/issues
+
+If you have questions or feedback, please subscribe to
+
+https://lists.linaro.org/mailman/listinfo/openembedded
+
+Maintainers
+-------------------------
+
+* Koen Kooi <mailto:koen.kooi@linaro.org>
+* Nicolas Dechesne <nicolas.dechesne@linaro.org>
+* Fathi Boudra <mailto:fathi.boudra@linaro.org>
