@@ -11,7 +11,7 @@
   
   <project name="96boards/meta-96boards" path="layers/meta-96boards" remote="github"/>
   <project name="96boards/meta-rpb" path="layers/meta-rpb" remote="github"/>
-  <project name="whni/robotpi-os-setup" path="conf" remote="github" revision="linaro/kirkstone">
+  <project name="whni/robotpi-os-setup" path="manifests" remote="github" revision="linaro/kirkstone">
     <linkfile dest="setup-environment" src="setup-environment-internal"/>
   </project>
   <project name="OSSystems/meta-browser" path="layers/meta-browser" remote="github" revision="ea731e8d4fd8a0b40448ea286b2c92824ee591cc"/>
