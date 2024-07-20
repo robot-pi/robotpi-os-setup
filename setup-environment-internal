@@ -218,6 +218,8 @@ bitbake_secondary_image () {
 
     MACHINE=$MACHINE bitbake $BITBAKE_OPTIONS
 }
+
+# enter build directory
 mkdir -p "${BUILDDIR}"/conf && cd "${BUILDDIR}"
 if [ -f "conf/auto.conf" ]; then
     oldmach=$(egrep "^MACHINE" "conf/auto.conf" | sed -e 's%^MACHINE ?= %%' | sed -e 's/^"//'  -e 's/"$//')

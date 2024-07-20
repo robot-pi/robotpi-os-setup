@@ -1,10 +1,8 @@
-oe-rpb-manifest
+Robot-Pi Manifest Repository
 =================
 
-OE QCOM RPB Repo manifest repository
-
-These are the setup scripts for the OE RPB buildsystem. If you want to (re)build packages or images for OE RPB, this is the thing to use.
-The OE RPB buildsystem is using various components from the Yocto Project, most importantly the Openembedded buildsystem, the bitbake task executor and various application and BSP layers.
+These are the setup scripts for the Robot-Pi OE buildsystem. If you want to (re)build packages or images, this is the thing to use.
+The Robot-Pi OE buildsystem is using various components from the Yocto Project, most importantly the Openembedded buildsystem, the bitbake task executor and various application and BSP layers.
 
 To configure the scripts and download the build metadata, do:
 ```
@@ -16,7 +14,7 @@ chmod a+x ~/bin/repo
 ```
 Run repo init to bring down the latest version of Repo with all its most recent bug fixes. You must specify a URL for the manifest, which specifies where the various repositories included in the Android source will be placed within your working directory. To check out the current branch, specify it with -b:
 ```
-repo init -u https://github.com/96boards/oe-rpb-manifest.git -b qcom/kirkstone
+repo init -u git@github.com:whni/robotpi-os-setup.git -b linaro/kirkstone
 ```
 When prompted, configure Repo with your real name and email address.
 
@@ -36,6 +34,11 @@ More rarely, Linux clients experience connectivity issues, getting stuck in the 
 sudo sysctl -w net.ipv4.tcp_window_scaling=0
 repo sync -j1
 ```
+In any sub-project/repository, you can use github command to create pull request for code merge:
+```
+gh pr create -B <target_branch>
+```
+
 Setup Environment
 -----------------
 
@@ -49,7 +52,7 @@ DISTRO values can be:
 * rpb-wayland
 
 ```
-. setup-environment
+source setup-environment
 MACHINE=<machine> DISTRO=<distro> bitbake <image>
 ```
 e.g. MACHINE=dragonboard-410c DISTRO=rpb bitbake core-image-minimal
