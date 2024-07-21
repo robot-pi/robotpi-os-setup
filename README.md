@@ -22,7 +22,10 @@ A successful initialization will end with a message stating that Repo is initial
 
 To pull down the metadata sources to your working directory from the repositories as specified in the default manifest, run
 ```
+# sync to latest projects (local commits are abandoned)
 repo sync
+# rebase to latest project (local commits are reversed)
+repo rebase
 ```
 When downloading from behind a proxy (which is common in some corporate environments), it might be necessary to explicitly specify the proxy that is then used by repo:
 ```
@@ -34,15 +37,21 @@ More rarely, Linux clients experience connectivity issues, getting stuck in the 
 sudo sysctl -w net.ipv4.tcp_window_scaling=0
 repo sync -j1
 ```
-In any sub-project/repository, you can use github command to create pull request for code merge:
+In any sub-project/repository, you can push your commit(s) by:
 ```
-gh pr create -B <target_branch>
+git push <remote_url> HEAD:<remote_branch>
+
+# manifest project
+git push git@github.com:whni/robotpi-os-setup.git HEAD:linaro/kirkstone
+# robotpi layer project
+git push git@github.com:whni/meta-robotpi.git HEAD:main
 ```
 
 Setup Environment
 -----------------
 
 MACHINE values can be:
+* qrb5165-rb5
 * dragonboard-410c
 * dragonboard-820c
 * ...

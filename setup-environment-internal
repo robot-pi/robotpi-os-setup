@@ -19,13 +19,13 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 RPBcleanup() {
-        unset MACHINETABLE MACHLAYERS DISTROTABLE DISTROLAYERS DISTRO_DIRNAME OEROOT
-        unset ITEM MANIFESTS EULA EULA_MACHINE REPLY READ_EULA
-        unset usage oldmach
+    unset MACHINETABLE MACHLAYERS DISTROTABLE DISTROLAYERS DISTRO_DIRNAME OEROOT
+    unset ITEM MANIFESTS EULA EULA_MACHINE REPLY READ_EULA
+    unset usage oldmach
 
-        if [ -n "$BUILDDIR" ]; then
-                export BUILDDIR
-        fi
+    if [ -n "$BUILDDIR" ]; then
+        export BUILDDIR
+    fi
 }
 trap RPBcleanup RETURN
 
@@ -140,7 +140,7 @@ if [ -z "${SDKMACHINE}" ]; then
     SDKMACHINE='x86_64'
 fi
 
-MANIFESTS="${OEROOT}"/conf
+MANIFESTS="${OEROOT}"/manifests
 
 # we can be called with only 1 parameter max, <build> folder, or default to build-$distro
 BUILDDIR=build-$DISTRO
@@ -236,11 +236,34 @@ fi
 # evaluate new checksum and regenerate the conf files
 sha512sum "${MANIFESTS}"/setup-environment-internal 2>&1 > conf/checksum
 
-ln -sf "${MANIFESTS}"/conf/local.conf conf/local.conf
-ln -sf "${MANIFESTS}"/conf/bblayers.conf conf/bblayers.conf
-ln -sf "${MANIFESTS}"/README.md README.md
+# regenerate build directory configrations
+BUILD_LOCAL_CONF="${BUILDDIR}/conf/local.conf"
+BUILD_BBLAYERS_CONF="${BUILDDIR}/conf/bblayers.conf"
+BUILD_CONF_REGENERATE="Y"
+if [ -e "$BUILD_LOCAL_CONF" ] || [ -e "$BUILD_BBLAYERS_CONF" ]; then
+    BUILD_CONF_MSG="The following files are detected:\n"
+    BUILD_CONF_MSG+="  1) $(basename $BUILD_LOCAL_CONF)\n"
+    BUILD_CONF_MSG+="  2) $(basename $BUILD_BBLAYERS_CONF)\n"
+    BUILD_CONF_MSG+="Do you want to regenerate?"
+    dialog --yesno "$BUILD_CONF_MSG" 8 40
+    if [ "$?" = "1" ]; then
+        BUILD_CONF_REGENERATE="N"
+    fi
+fi
+if [ "$BUILD_CONF_REGENERATE" = "Y" ]; then
+    echo "Regenerate OE configurations: $(basename $BUILD_LOCAL_CONF), $(basename $BUILD_BBLAYERS_CONF)."
+    rm -f "$BUILD_LOCAL_CONF"
+    rm -f "$BUILD_BBLAYERS_CONF"
+    cp "${MANIFESTS}"/conf/local.conf "$BUILD_LOCAL_CONF"
+    cp "${MANIFESTS}"/conf/bblayers.conf "$BUILD_BBLAYERS_CONF"
+else
+    echo "Keep old $(basename $BUILD_LOCAL_CONF) and $(basename $BUILD_BBLAYERS_CONF)."
+fi
 
-ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
+#ln -sf "${MANIFESTS}"/conf/local.conf conf/local.conf
+#ln -sf "${MANIFESTS}"/conf/bblayers.conf conf/bblayers.conf
+#ln -sf "${MANIFESTS}"/README.md README.md
+#ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
 
 DISTRO_DIRNAME=$(echo "${DISTRO}" | sed 's#[.-]#_#g')
 
@@ -346,7 +369,7 @@ fi
 
 cat <<EOF
 
-Welcome to OpenEmbedded Reference Platform Build (OE RPB)
+Welcome to Robot-Pi OpenEmbedded Reference Platform Build (OE RPB)
 
 For more information about OpenEmbedded see their website:
     http://www.openembedded.org/
