@@ -57,6 +57,7 @@ MACHINE values can be:
 * ...
 
 DISTRO values can be:
+* robotpi
 * rpb
 * rpb-wayland
 
