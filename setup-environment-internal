@@ -59,8 +59,9 @@ if [ $# -gt 1 ]; then
     usage
     return 1
 fi
+
 # create a common list of "<machine>(<layer>)", sorted by <machine>
-# Restrict to meta-qcom machines, qemuarm 32 and 64
+# Restrict to meta-qcom, meta-raspberrypi, qemuarm 32 and 64
 MACHLAYERS=$(find layers -print | grep "qemuarm.conf\|qemuarm64.conf\|meta-qcom/conf/machine/.*\.conf\|meta-raspberrypi/conf/machine/.*\.conf" | sed -e 's/\.conf//g' -e 's/layers\///' | awk -F'/conf/machine/' '{print $NF "(" $1 ")"}' | LANG=C sort)
 
 if [ -z "${MACHINE}" ]; then
@@ -221,20 +222,6 @@ bitbake_secondary_image () {
 
 # enter build directory
 mkdir -p "${BUILDDIR}"/conf && cd "${BUILDDIR}"
-if [ -f "conf/auto.conf" ]; then
-    oldmach=$(egrep "^MACHINE" "conf/auto.conf" | sed -e 's%^MACHINE ?= %%' | sed -e 's/^"//'  -e 's/"$//')
-fi
-if [ -e conf/checksum -a "${MACHINE}" = "$oldmach" ]
-then
-    sha512sum --quiet -c conf/checksum > /dev/null 2>&1
-    if [ $? -eq 0 ]
-    then
-       return
-    fi
-fi
-
-# evaluate new checksum and regenerate the conf files
-sha512sum "${MANIFESTS}"/setup-environment-internal 2>&1 > conf/checksum
 
 # regenerate build directory configrations
 BUILD_LOCAL_CONF="${BUILDDIR}/conf/local.conf"
@@ -245,7 +232,7 @@ if [ -e "$BUILD_LOCAL_CONF" ] || [ -e "$BUILD_BBLAYERS_CONF" ]; then
     BUILD_CONF_MSG+="  1) $(basename $BUILD_LOCAL_CONF)\n"
     BUILD_CONF_MSG+="  2) $(basename $BUILD_BBLAYERS_CONF)\n"
     BUILD_CONF_MSG+="Do you want to regenerate?"
-    dialog --yesno "$BUILD_CONF_MSG" 8 40
+    dialog --title "Regenerate Configurations" --yesno "$BUILD_CONF_MSG" 8 40
     if [ "$?" = "1" ]; then
         BUILD_CONF_REGENERATE="N"
     fi
@@ -260,10 +247,9 @@ else
     echo "Keep old $(basename $BUILD_LOCAL_CONF) and $(basename $BUILD_BBLAYERS_CONF)."
 fi
 
-#ln -sf "${MANIFESTS}"/conf/local.conf conf/local.conf
-#ln -sf "${MANIFESTS}"/conf/bblayers.conf conf/bblayers.conf
-#ln -sf "${MANIFESTS}"/README.md README.md
-#ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
+# evaluate new checksum
+sha512sum "${MANIFESTS}"/setup-environment-internal 2>&1 > conf/checksum
+
 
 DISTRO_DIRNAME=$(echo "${DISTRO}" | sed 's#[.-]#_#g')
 
@@ -388,3 +374,5 @@ Some of common targets are:
     core-image-minimal
 
 EOF
+
+RPBcleanup

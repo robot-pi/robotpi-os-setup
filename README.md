@@ -62,7 +62,14 @@ DISTRO values can be:
 
 ```
 source setup-environment
+
 MACHINE=<machine> DISTRO=<distro> bitbake <image>
+
+# if we have these env variables set, directly run bitbake
+# echo $MACHINE
+# echo $DISTRO
+# echo $SDKMACHINE
+bitbake <image>
 ```
 e.g. MACHINE=dragonboard-410c DISTRO=rpb bitbake core-image-minimal
 
