@@ -353,7 +353,7 @@ fi
 
 cat <<EOF
 
-Welcome to Robot-Pi OpenEmbedded Reference Platform Build (OE RPB)
+Welcome to Robot-Pi OpenEmbedded (OE) Build
 
 For more information about OpenEmbedded see their website:
     http://www.openembedded.org/
@@ -367,9 +367,9 @@ Your build environment has been configured with:
 You can now run 'bitbake <target>'
 
 Some of common targets are:
-    rpb-console-image
-    rpb-desktop-image
-    rpb-weston-image
+    robotpi-desktop-image-release
+    robotpi-desktop-image-debug
+    robotpi-desktop-image-develop
     core-image-base
     core-image-minimal
 

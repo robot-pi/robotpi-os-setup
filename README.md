@@ -47,7 +47,7 @@ git push git@github.com:whni/robotpi-os-setup.git HEAD:linaro/kirkstone
 git push git@github.com:whni/meta-robotpi.git HEAD:main
 ```
 
-Setup Environment
+Setup Build Environment
 -----------------
 
 MACHINE values can be:
@@ -58,21 +58,81 @@ MACHINE values can be:
 
 DISTRO values can be:
 * robotpi
+* robotpi-wayland (no supported image yet)
 * rpb
 * rpb-wayland
 
 ```
 source setup-environment
 
-MACHINE=<machine> DISTRO=<distro> bitbake <image>
+# MACHINE=<machine> DISTRO=<distro> bitbake <image>
+MACHINE=qrb5165-rb5 DISTRO=robotpi bitbake robotpi-desktop-image-debug
 
-# if we have these env variables set, directly run bitbake
+# once we have these env variables set, directly run bitbake in build-${DISTRO} directory:
 # echo $MACHINE
 # echo $DISTRO
 # echo $SDKMACHINE
-bitbake <image>
+# bitbake <image>
+bitbake robotpi-desktop-image-debug
 ```
-e.g. MACHINE=dragonboard-410c DISTRO=rpb bitbake core-image-minimal
+
+NOTE: to prevent build process from being killed by the system, we need to stop out-of-memory manager on Ubuntu dev machine:
+```
+systemctl disable --now systemd-oomd
+systemctl mask systemd-oomd
+
+systemctl is-enabled systemd-oomd
+```
+
+
+Flash Image onto RB5 Board
+-----------------------------
+After the build process is done, the generated images can be found at `build-${DISTRO}/tmp-${DISTRO}-glibc/deploy/images/${MACHINE}/`, e.g., 
+`build-robotpi/tmp-robotpi-glibc/deploy/images/qrb5165-rb5/`.
+
+#### Kernel
+- `boot-qrb5165-rb5.img` (soft link)
+- `boot-qrb5165-rb5--6.0-r0-qrb5165-rb5-${TIMESTAMP}.img`
+
+#### Device tree table
+- `qrb5165-rb5.dtb` (soft link)
+- `qrb5165-rb5--6.0-r0-qrb5165-rb5-${TIMESTAMP}.dtb`
+
+#### Rootfs compressed image (release/debug/develop)
+- `robotpi-desktop-image-debug-qrb5165-rb5.ext4.gz (soft link)`
+- `robotpi-desktop-image-develop-qrb5165-rb5-${TIMESTAMP}.rootfs.ext4.gz`
+
+Switch RB5 board into fastboot mode (presseing vol- while reconnecting power cable):
+```
+# list fastboot devices
+fastboot devices
+
+# flash kernel/boot partition
+fastboot flash boot boot-qrb5165-rb5--6.0-r0-qrb5165-rb5-${TIMESTAMP}.img
+
+# flash rootfs partition
+# use real file since gunzip cannot read soft link
+# or use graphic tool to uncompress soft link file
+gunzip robotpi-desktop-image-develop-qrb5165-rb5-${TIMESTAMP}.rootfs.ext4.gz
+fastboot flash rootfs robotpi-desktop-image-debug-qrb5165-rb5.ext4
+
+# reboot
+fastboot reboot
+```
+
+System Post-Configuration
+-----------------------------
+#### Remote Login
+1. ADB: connecting host to the board USB-C port, use `adb shell` to log into the board (as root)
+2. SSH: after the board connects to Internet, use `ssh username@ip_address`. The `username` can be `robotpi` or `root`.
+   This option only works for debug/develop images.
+
+#### Internet Connection
+The system is using network manager to control network interfaces. To connect to Wi-Fi AP:
+```
+nmcli device
+nmcli device wifi connect <SSID> password <PASSWORD>
+```
 
 Creating a local topic branch
 -----------------------------
