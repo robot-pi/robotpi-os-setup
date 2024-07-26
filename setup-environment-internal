@@ -61,9 +61,16 @@ if [ $# -gt 1 ]; then
 fi
 
 # create a common list of "<machine>(<layer>)", sorted by <machine>
-# Restrict to meta-qcom, meta-raspberrypi, qemuarm 32 and 64
-MACHLAYERS=$(find layers -print | grep "qemuarm.conf\|qemuarm64.conf\|meta-qcom/conf/machine/.*\.conf\|meta-raspberrypi/conf/machine/.*\.conf" | sed -e 's/\.conf//g' -e 's/layers\///' | awk -F'/conf/machine/' '{print $NF "(" $1 ")"}' | LANG=C sort)
+# Restrict to meta-qcom, meta-raspberrypi 4+, qemux86, qemuarm
+QUALIFIED_MACHINES="meta-qcom/conf/machine/.*\.conf"
+QUALIFIED_MACHINES+="\|openembedded-core/meta/conf/machine/qemux86.*\.conf"
+QUALIFIED_MACHINES+="\|openembedded-core/meta/conf/machine/qemuarm.conf"
+QUALIFIED_MACHINES+="\|openembedded-core/meta/conf/machine/qemuarm64.conf"
+QUALIFIED_MACHINES+="\|meta-raspberrypi/conf/machine/raspberrypi4.*\.conf"
+QUALIFIED_MACHINES+="\|meta-raspberrypi/conf/machine/raspberrypi5.*\.conf"
+MACHLAYERS=$(find layers -print | grep ${QUALIFIED_MACHINES} | sed -e 's/\.conf//g' -e 's/layers\///' | awk -F'/conf/machine/' '{print $NF "(" $1 ")"}' | LANG=C sort)
 
+DIALOG_DEFAULT_MACHINE="qrb5165-rb5"
 if [ -z "${MACHINE}" ]; then
     # whiptail
     which whiptail > /dev/null 2>&1
@@ -72,7 +79,7 @@ if [ -z "${MACHINE}" ]; then
         for ITEM in $MACHLAYERS; do
             MACHINETABLE="${MACHINETABLE} $(echo "$ITEM" | cut -d'(' -f1) $(echo "$ITEM" | cut -d'(' -f2 | cut -d')' -f1)"
         done
-        MACHINE=$(whiptail --title "Available Machines" --menu \
+        MACHINE=$(whiptail --title "Available Machines" --default-item ${DIALOG_DEFAULT_MACHINE} --menu \
             "Please choose a machine" 0 0 20 \
             ${MACHINETABLE} 3>&1 1>&2 2>&3)
     fi
@@ -85,7 +92,7 @@ if [ -z "${MACHINE}" ]; then
             for ITEM in $MACHLAYERS; do
                 MACHINETABLE="$MACHINETABLE $(echo "$ITEM" | cut -d'(' -f1) $(echo "$ITEM" | cut -d'(' -f2 | cut -d')' -f1)"
             done
-            MACHINE=$(dialog --title "Available Machines" --menu "Please choose a machine" 0 0 20 $MACHINETABLE 3>&1 1>&2 2>&3)
+            MACHINE=$(dialog --title "Available Machines" --default-item ${DIALOG_DEFAULT_MACHINE} --menu "Please choose a machine" 0 0 20 $MACHINETABLE 3>&1 1>&2 2>&3)
         fi
     fi
 fi
@@ -94,6 +101,7 @@ fi
 # Blacklist OE-core and meta-linaro, we only want 96boards + vendor layers
 DISTROLAYERS=$(find layers -print | grep "conf/distro/.*\.conf" | grep -v scripts | grep -v openembedded-core | grep -v meta-linaro | sed -e 's/\.conf//g' -e 's/layers\///' | awk -F'/conf/distro/' '{print $NF "(" $1 ")"}' | LANG=C sort)
 
+DIALOG_DEFAULT_DISTRO="robotpi"
 if [ -n "${DISTROLAYERS}" ] && [ -z "${DISTRO}" ]; then
     # whiptail
     which whiptail > /dev/null 2>&1
@@ -102,7 +110,7 @@ if [ -n "${DISTROLAYERS}" ] && [ -z "${DISTRO}" ]; then
         for ITEM in $DISTROLAYERS; do
             DISTROTABLE="${DISTROTABLE} $(echo "$ITEM" | cut -d'(' -f1) $(echo "$ITEM" | cut -d'(' -f2 | cut -d')' -f1)"
         done
-        DISTRO=$(whiptail --title "Available Distributions" --menu \
+        DISTRO=$(whiptail --title "Available Distributions" --default-item ${DIALOG_DEFAULT_DISTRO} --menu \
             "Please choose a distribution" 0 0 20 \
             ${DISTROTABLE} 3>&1 1>&2 2>&3)
     fi
@@ -115,7 +123,7 @@ if [ -n "${DISTROLAYERS}" ] && [ -z "${DISTRO}" ]; then
             for ITEM in $DISTROLAYERS; do
                 DISTROTABLE="$DISTROTABLE $(echo "$ITEM" | cut -d'(' -f1) $(echo "$ITEM" | cut -d'(' -f2 | cut -d')' -f1)"
             done
-            DISTRO=$(dialog --title "Available Distributions" --menu "Please choose a distribution" 0 0 20 $DISTROTABLE 3>&1 1>&2 2>&3)
+            DISTRO=$(dialog --title "Available Distributions" --default-item ${DIALOG_DEFAULT_DISTRO} --menu "Please choose a distribution" 0 0 20 $DISTROTABLE 3>&1 1>&2 2>&3)
         fi
     fi
 fi
@@ -232,7 +240,7 @@ if [ -e "$BUILD_LOCAL_CONF" ] || [ -e "$BUILD_BBLAYERS_CONF" ]; then
     BUILD_CONF_MSG+="  1) $(basename $BUILD_LOCAL_CONF)\n"
     BUILD_CONF_MSG+="  2) $(basename $BUILD_BBLAYERS_CONF)\n"
     BUILD_CONF_MSG+="Do you want to regenerate?"
-    dialog --title "Regenerate Configurations" --yesno "$BUILD_CONF_MSG" 8 40
+    dialog --title "Regenerate Configurations" --defaultno --yesno "$BUILD_CONF_MSG" 8 40
     if [ "$?" = "1" ]; then
         BUILD_CONF_REGENERATE="N"
     fi

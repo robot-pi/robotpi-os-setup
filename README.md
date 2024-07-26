@@ -102,7 +102,7 @@ After the build process is done, the generated images can be found at `build-${D
 - `robotpi-desktop-image-debug-qrb5165-rb5.ext4.gz (soft link)`
 - `robotpi-desktop-image-develop-qrb5165-rb5-${TIMESTAMP}.rootfs.ext4.gz`
 
-Switch RB5 board into fastboot mode (presseing vol- while reconnecting power cable):
+Switch the RB5 board into fastboot mode (pressing vol- while reconnecting the power cable):
 ```
 # list fastboot devices
 fastboot devices
