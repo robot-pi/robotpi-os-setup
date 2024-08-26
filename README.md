@@ -14,7 +14,7 @@ chmod a+x ~/bin/repo
 ```
 Run repo init to bring down the latest version of Repo with all its most recent bug fixes. You must specify a URL for the manifest, which specifies where the various repositories included in the Android source will be placed within your working directory. To check out the current branch, specify it with -b:
 ```
-repo init -u git@github.com:whni/robotpi-os-setup.git -b main
+repo init -u git@github.com:robot-pi/robotpi-os-setup.git -b main
 ```
 When prompted, configure Repo with your real name and email address.
 
@@ -42,9 +42,9 @@ In any sub-project/repository, you can push your commit(s) by:
 git push <remote_url> HEAD:<remote_branch>
 
 # manifest project
-git push git@github.com:whni/robotpi-os-setup.git HEAD:main
+git push git@github.com:robot-pi/robotpi-os-setup.git HEAD:main
 # robotpi layer project
-git push git@github.com:whni/meta-robotpi.git HEAD:main
+git push git@github.com:robot-pi/meta-robotpi.git HEAD:main
 ```
 
 Setup Build Environment

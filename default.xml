@@ -9,10 +9,10 @@
   
   <default revision="kirkstone" sync-j="4"/>
   
-  <project name="whni/robotpi-os-setup" path="manifests" remote="github" revision="main">
+  <project name="robot-pi/robotpi-os-setup" path="manifests" remote="github" revision="main">
     <linkfile dest="setup-environment" src="setup-environment-internal"/>
   </project>
-  <project name="whni/meta-robotpi" path="layers/meta-robotpi" remote="github" revision="main"/>
+  <project name="robot-pi/meta-robotpi" path="layers/meta-robotpi" remote="github" revision="main"/>
   <project name="robwoolley/meta-ros" path="layers/meta-ros" remote="github" revision="kirkstone-humble-world-fixes"/>
   <!-- <project name="ros/meta-ros" path="layers/meta-ros" remote="github"/> -->
 
